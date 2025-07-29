@@ -5,18 +5,22 @@
 
 <form id="form-equipo" method="post" action="{% url 'actualizar_equipo' equipo.id %}">
     {% csrf_token %}
+    
     <div class="mb-3">
-        <label>Nombre</label>
-        <input type="text" class="form-control" name="nombre" value="{{ equipo.nombre }}">
+        <label for="nombre" class="form-label"><strong>Nombre</strong></label>
+        <input type="text" class="form-control" name="nombre" id="nombre" value="{{ equipo.nombre }}">
     </div>
+
     <div class="mb-3">
-        <label>Descripción</label>
-        <input type="text" class="form-control" name="descripcion" value="{{ equipo.descripcion }}">
+        <label for="descripcion" class="form-label"><strong>Descripción</strong></label>
+        <input type="text" class="form-control" name="descripcion" id="descripcion" value="{{ equipo.descripcion }}">
     </div>
+
     <div class="mb-3">
-        <label>Total de Jugadores</label>
-        <input type="number" class="form-control" name="total_jugadores" value="{{ equipo.total_jugadores }}">
+        <label for="total_jugadores" class="form-label"><strong>Total de Jugadores</strong></label>
+        <input type="number" class="form-control" name="total_jugadores" id="total_jugadores" value="{{ equipo.total_jugadores }}">
     </div>
+
     <div class="text-end">
         <button type="submit" class="btn btn-primary">Actualizar</button>
         <a href="{% url 'listar_equipos' %}" class="btn btn-secondary">Cancelar</a>
@@ -26,18 +30,40 @@
 
 {% block scripts %}
 <script>
-    $('#form-equipo').validate({
-        rules: {
-            nombre: { required: true },
-            descripcion: { required: true },
-            total_jugadores: { required: true, number: true, min: 1 }
-        },
-        messages: {
-            nombre: "Ingrese el nombre.",
-            descripcion: "Ingrese la descripción.",
-            total_jugadores: "Ingrese un número válido."
-        },
-        errorClass: 'text-danger'
+    $(document).ready(function () {
+        $('#form-equipo').validate({
+            rules: {
+                nombre: {
+                    required: true,
+                    pattern: /^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]+$/
+                },
+                descripcion: {
+                    required: true
+                },
+                total_jugadores: {
+                    required: true,
+                    number: true,
+                    min: 6,
+                    max: 15
+                }
+            },
+            messages: {
+                nombre: {
+                    required: "Ingresa el nombre del equipo.",
+                    pattern: "Solo letras, números y espacios."
+                },
+                descripcion: {
+                    required: "Ingresa una descripción del equipo."
+                },
+                total_jugadores: {
+                    required: "Ingresa el número de jugadores.",
+                    number: "Debe ser un número.",
+                    min: "Mínimo 6 jugadores.",
+                    max: "Máximo 15 jugadores."
+                }
+            },
+            errorClass: "text-danger"
+        });
     });
 </script>
 {% endblock %}

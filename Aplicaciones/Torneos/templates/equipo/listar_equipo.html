@@ -1,13 +1,13 @@
 {% extends 'plantilla.html' %}
 
 {% block contenido %}
-<h3 class="mb-4">Lista de Equipos</h3>
+<h3 class="mb-4 text-center">Lista de Equipos</h3>
 
 <div class="mb-3 text-end">
     <a href="{% url 'form_nuevo_equipo' %}" class="btn btn-success">+ Nuevo Equipo</a>
 </div>
 
-<table id="tabla" class="table table-bordered table-striped">
+<table id="tabla-equipos" class="table table-bordered table-striped">
     <thead class="table-dark">
         <tr>
             <th>ID</th>
@@ -25,8 +25,12 @@
             <td>{{ equipo.descripcion }}</td>
             <td>{{ equipo.total_jugadores }}</td>
             <td>
-                <a href="{% url 'form_editar_equipo' equipo.id %}" class="btn btn-primary btn-sm">Editar</a>
-                <a href="#" onclick="confirmarEliminacion({{ equipo.id }})" class="btn btn-danger btn-sm">Eliminar</a>
+                <a href="{% url 'form_editar_equipo' equipo.id %}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <a href="#" onclick="confirmarEliminacion({{ equipo.id }})" class="btn btn-sm btn-danger">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
             </td>
         </tr>
         {% empty %}
@@ -41,7 +45,15 @@
 {% block scripts %}
 <script>
     $(document).ready(function () {
-        $('#tabla').DataTable({
+        $('#tabla-equipos').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                { extend: 'copy', text: 'Copiar' },
+                { extend: 'csv', text: 'CSV' },
+                { extend: 'excel', text: 'Excel' },
+                { extend: 'pdf', text: 'PDF' },
+                { extend: 'print', text: 'Imprimir' }
+            ],
             language: {
                 url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
             }

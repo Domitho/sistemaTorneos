@@ -5,18 +5,22 @@
 
 <form id="form-estadio" method="post" action="{% url 'actualizar_estadio' estadio.id %}">
     {% csrf_token %}
+    
     <div class="mb-3">
-        <label>Nombre</label>
-        <input type="text" class="form-control" name="nombre" value="{{ estadio.nombre }}">
+        <label for="nombre" class="form-label"><strong>Nombre</strong></label>
+        <input type="text" class="form-control" name="nombre" id="nombre" value="{{ estadio.nombre }}">
     </div>
+
     <div class="mb-3">
-        <label>Ubicación</label>
-        <input type="text" class="form-control" name="ubicacion" value="{{ estadio.ubicacion }}">
+        <label for="ubicacion" class="form-label"><strong>Ubicación</strong></label>
+        <input type="text" class="form-control" name="ubicacion" id="ubicacion" value="{{ estadio.ubicacion }}">
     </div>
+
     <div class="mb-3">
-        <label>Capacidad</label>
-        <input type="number" class="form-control" name="capacidad" value="{{ estadio.capacidad }}">
+        <label for="capacidad" class="form-label"><strong>Capacidad</strong></label>
+        <input type="number" class="form-control" name="capacidad" id="capacidad" value="{{ estadio.capacidad }}">
     </div>
+
     <div class="text-end">
         <button type="submit" class="btn btn-primary">Actualizar</button>
         <a href="{% url 'listar_estadios' %}" class="btn btn-secondary">Cancelar</a>
@@ -26,18 +30,42 @@
 
 {% block scripts %}
 <script>
-    $('#form-estadio').validate({
-        rules: {
-            nombre: { required: true },
-            ubicacion: { required: true },
-            capacidad: { required: true, number: true, min: 1 }
-        },
-        messages: {
-            nombre: "Ingrese el nombre.",
-            ubicacion: "Ingrese la ubicación.",
-            capacidad: "Ingrese un número válido."
-        },
-        errorClass: 'text-danger'
+    $(document).ready(function () {
+        $('#form-estadio').validate({
+            rules: {
+                nombre: {
+                    required: true,
+                    pattern: /^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]+$/
+                },
+                ubicacion: {
+                    required: true,
+                    pattern: /^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/
+                },
+                capacidad: {
+                    required: true,
+                    number: true,
+                    min: 1,
+                    max: 700
+                }
+            },
+            messages: {
+                nombre: {
+                    required: "Ingresa el nombre del estadio.",
+                    pattern: "Solo letras, números y espacios."
+                },
+                ubicacion: {
+                    required: "Ingresa la ubicación.",
+                    pattern: "Solo letras y espacios."
+                },
+                capacidad: {
+                    required: "Ingresa la capacidad.",
+                    number: "Debe ser un número.",
+                    min: "Debe ser al menos 1.",
+                    max: "Máximo permitido: 700."
+                }
+            },
+            errorClass: "text-danger"
+        });
     });
 </script>
 {% endblock %}

@@ -12,6 +12,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet" />
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+    <!-- Botones de exportación -->
+    <link href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css" rel="stylesheet" />
+
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <!-- Bootstrap JS -->
@@ -24,9 +27,17 @@
     <!-- jQuery Validate -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 
-    <!-- Google Chart -->    
+    <!-- Google Chart -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
+    <!-- Extensiones DataTables para exportar -->
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 </head>
 
 <body style="background-color: #f4f6f7;">
@@ -106,6 +117,20 @@
 
     {% block scripts %}
     {% endblock %}
+
+    {% if messages %}
+    <script>
+        {% for message in messages %}
+        Swal.fire({
+            icon: '{% if message.tags == "success" %}success{% else %}error{% endif %}',
+            title: '{{ message }}',
+            showConfirmButton: false,
+            timer: 2500
+        });
+        {% endfor %}
+    </script>
+    {% endif %}
+
 </body>
 
 </html>

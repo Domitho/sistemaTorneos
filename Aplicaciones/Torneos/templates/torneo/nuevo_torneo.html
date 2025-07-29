@@ -7,16 +7,20 @@
     {% csrf_token %}
     <div class="mb-3">
         <label>Nombre</label>
-        <input type="text" class="form-control" name="nombre">
+        <input type="text" class="form-control" name="nombre" id="nombre"
+               pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Solo letras y espacios" maxlength="50">
     </div>
+
     <div class="mb-3">
         <label>Fecha de Inicio</label>
-        <input type="date" class="form-control" name="fecha_inicio">
+        <input type="date" class="form-control" name="fecha_inicio" id="fecha_inicio">
     </div>
+
     <div class="mb-3">
         <label>Fecha de Fin</label>
-        <input type="date" class="form-control" name="fecha_fin">
+        <input type="date" class="form-control" name="fecha_fin" id="fecha_fin">
     </div>
+
     <div class="text-end">
         <button type="submit" class="btn btn-success">Guardar</button>
         <a href="{% url 'listar_torneos' %}" class="btn btn-secondary">Cancelar</a>
@@ -26,18 +30,64 @@
 
 {% block scripts %}
 <script>
-    $('#form-torneo').validate({
-        rules: {
-            nombre: { required: true },
-            fecha_inicio: { required: true },
-            fecha_fin: { required: true }
-        },
-        messages: {
-            nombre: "Ingrese el nombre del torneo.",
-            fecha_inicio: "Ingrese la fecha de inicio.",
-            fecha_fin: "Ingrese la fecha de fin."
-        },
-        errorClass: 'text-danger'
+    $(document).ready(function () {
+        // Establecer min y max en los campos de fecha
+        const hoy = new Date().toISOString().split('T')[0];
+        const finAnio = new Date(new Date().getFullYear(), 11, 31).toISOString().split('T')[0];
+        $('#fecha_inicio').attr('min', hoy);
+        $('#fecha_inicio').attr('max', finAnio);
+        $('#fecha_fin').attr('min', hoy);
+        $('#fecha_fin').attr('max', finAnio);
+
+        $('#form-torneo').validate({
+            rules: {
+                nombre: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 50,
+                    pattern: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/
+                },
+                fecha_inicio: {
+                    required: true,
+                    date: true
+                },
+                fecha_fin: {
+                    required: true,
+                    date: true
+                }
+            },
+            messages: {
+                nombre: {
+                    required: "Ingrese el nombre del torneo.",
+                    minlength: "Mínimo 2 caracteres.",
+                    maxlength: "Máximo 50 caracteres.",
+                    pattern: "Solo letras y espacios."
+                },
+                fecha_inicio: {
+                    required: "Ingrese la fecha de inicio.",
+                    date: "Ingrese una fecha válida."
+                },
+                fecha_fin: {
+                    required: "Ingrese la fecha de fin.",
+                    date: "Ingrese una fecha válida."
+                }
+            },
+            submitHandler: function (form) {
+                const inicio = new Date($('#fecha_inicio').val());
+                const fin = new Date($('#fecha_fin').val());
+
+                if (fin <= inicio) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'La fecha de fin debe ser posterior a la de inicio.'
+                    });
+                    return false;
+                }
+                form.submit();
+            },
+            errorClass: 'text-danger'
+        });
     });
 </script>
 {% endblock %}

@@ -18,7 +18,7 @@
 
     <div class="mb-3">
         <label>Equipo Local</label>
-        <select name="equipo_local" class="form-select">
+        <select name="equipo_local" class="form-select" id="equipo_local">
             <option value="">-- Seleccione --</option>
             {% for e in equipos %}
             <option value="{{ e.id }}">{{ e.nombre }}</option>
@@ -28,7 +28,7 @@
 
     <div class="mb-3">
         <label>Equipo Visitante</label>
-        <select name="equipo_visitante" class="form-select">
+        <select name="equipo_visitante" class="form-select" id="equipo_visitante">
             <option value="">-- Seleccione --</option>
             {% for e in equipos %}
             <option value="{{ e.id }}">{{ e.nombre }}</option>
@@ -58,12 +58,12 @@
 
     <div class="mb-3">
         <label>Fecha</label>
-        <input type="date" name="fecha" class="form-control">
+        <input type="date" name="fecha" class="form-control" id="fecha">
     </div>
 
     <div class="mb-3">
         <label>Hora</label>
-        <input type="time" name="hora" class="form-control">
+        <input type="time" name="hora" class="form-control" id="hora">
     </div>
 
     <div class="text-end">
@@ -75,26 +75,62 @@
 
 {% block scripts %}
 <script>
-    $('#form-partido').validate({
-        rules: {
-            torneo: { required: true },
-            equipo_local: { required: true },
-            equipo_visitante: { required: true },
-            estadio: { required: true },
-            arbitro: { required: true },
-            fecha: { required: true },
-            hora: { required: true }
-        },
-        messages: {
-            torneo: "Seleccione el torneo.",
-            equipo_local: "Seleccione equipo local.",
-            equipo_visitante: "Seleccione equipo visitante.",
-            estadio: "Seleccione un estadio.",
-            arbitro: "Seleccione un árbitro.",
-            fecha: "Ingrese la fecha.",
-            hora: "Ingrese la hora."
-        },
-        errorClass: 'text-danger'
+    $(document).ready(function () {
+        const hoy = new Date().toISOString().split('T')[0];
+        const finAnio = new Date(new Date().getFullYear(), 11, 31).toISOString().split('T')[0];
+
+        $('#fecha').attr('min', hoy);
+        $('#fecha').attr('max', finAnio);
+
+        $('#form-partido').validate({
+            rules: {
+                torneo: { required: true },
+                equipo_local: { required: true },
+                equipo_visitante: { required: true },
+                estadio: { required: true },
+                arbitro: { required: true },
+                fecha: { required: true, date: true },
+                hora: { required: true }
+            },
+            messages: {
+                torneo: "Seleccione el torneo.",
+                equipo_local: "Seleccione equipo local.",
+                equipo_visitante: "Seleccione equipo visitante.",
+                estadio: "Seleccione un estadio.",
+                arbitro: "Seleccione un árbitro.",
+                fecha: "Ingrese una fecha válida.",
+                hora: "Ingrese una hora válida."
+            },
+            submitHandler: function (form) {
+                const local = $('#equipo_local').val();
+                const visitante = $('#equipo_visitante').val();
+                const fecha = new Date($('#fecha').val());
+                const hora = $('#hora').val();
+
+                // Validar que no se enfrenten a sí mismos
+                if (local === visitante) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'El equipo local y visitante no pueden ser el mismo.'
+                    });
+                    return false;
+                }
+
+                // Validar hora entre 08:00 y 19:00
+                if (hora < "08:00" || hora > "19:00") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Hora inválida',
+                        text: 'La hora debe estar entre 08:00 y 19:00.'
+                    });
+                    return false;
+                }
+
+                form.submit(); // Si todo está bien, envía
+            },
+            errorClass: 'text-danger'
+        });
     });
 </script>
 {% endblock %}

@@ -1,31 +1,32 @@
 {% extends 'plantilla.html' %}
 {% block contenido %}
 
-<h3 class="mb-4">Registrar Arbitro</h3>
+<h3 class="mb-4">Registrar Árbitro</h3>
 
 <form id="form-arbitro" method="post" action="{% url 'guardar_arbitro' %}">
     {% csrf_token %}
 
     <div class="mb-3">
-        <label for="nombre" class="form-label">NOMBRE editado:</label>
-        <input type="text" class="form-control" name="nombre" id="nombre">
+        <label for="nombre" class="form-label">Nombre:</label>
+        <input type="text" class="form-control" name="nombre" id="nombre" maxlength="50" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Solo letras y espacios">
     </div>
 
     <div class="mb-3">
-        <label for="apellido" class="form-label">APELLIDO editado:</label>
-        <input type="text" class="form-control" name="apellido" id="apellido">
+        <label for="apellido" class="form-label">Apellido:</label>
+        <input type="text" class="form-control" name="apellido" id="apellido" maxlength="50" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Solo letras y espacios">
     </div>
 
     <div class="mb-3">
-        <label for="edad" class="form-label">EDAD</label>
-        <input type="number" class="form-control" name="edad" id="edad">
+        <label for="edad" class="form-label">Edad:</label>
+        <input type="number" class="form-control" name="edad" id="edad" min="18" max="50">
     </div>
 
     <div class="text-end">
-        <button type="submit" class="btn btn-success">GUARDAR</button>
+        <button type="submit" class="btn btn-success">Guardar</button>
         <a href="{% url 'listar_arbitros' %}" class="btn btn-secondary">Cancelar</a>
     </div>
 </form>
+
 {% endblock %}
 
 {% block scripts %}
@@ -33,23 +34,43 @@
     $(document).ready(function () {
         $('#form-arbitro').validate({
             rules: {
-                nombre: { required: true, minlength: 2 },
-                apellido: { required: true, minlength: 2 },
-                edad: { required: true, number: true, min: 18 }
+                nombre: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 50,
+                    pattern: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/
+                },
+                apellido: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 50,
+                    pattern: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/
+                },
+                edad: {
+                    required: true,
+                    number: true,
+                    min: 18,
+                    max: 50
+                }
             },
             messages: {
                 nombre: {
                     required: "Ingresa el nombre",
-                    minlength: "Minimo 2 caracteres"
+                    minlength: "Mínimo 2 caracteres",
+                    maxlength: "Máximo 50 caracteres",
+                    pattern: "Solo letras y espacios"
                 },
                 apellido: {
                     required: "Ingresa el apellido",
-                    minlength: "Minimo 2 caracteres"
+                    minlength: "Mínimo 2 caracteres",
+                    maxlength: "Máximo 50 caracteres",
+                    pattern: "Solo letras y espacios"
                 },
                 edad: {
                     required: "Ingresa la edad",
-                    number: "Solo numeros",
-                    minlength: "Minimo 2 caracteres"
+                    number: "Solo números",
+                    min: "Edad mínima 18",
+                    max: "Edad máxima 50"
                 }
             },
             errorClass: 'text-danger'
