@@ -1,0 +1,140 @@
+{% extends 'plantilla.html' %}
+{% block contenido %}
+<h3 class="text-center mb-4">Panel de Estadísticas del Torneo</h3>
+<div class="row">
+    <div class="col-md-6 mb-4"><div id="grafico1" style="height:300px;"></div></div>
+    <div class="col-md-6 mb-4"><div id="grafico2" style="height:300px;"></div></div>
+    <div class="col-md-6 mb-4"><div id="grafico3" style="height:300px;"></div></div>
+    <div class="col-md-6 mb-4"><div id="grafico4" style="height:300px;"></div></div>
+    <div class="col-md-6 mb-4"><div id="grafico5" style="height:300px;"></div></div>
+    <div class="col-md-6 mb-4"><div id="grafico6" style="height:300px;"></div></div>
+    <div class="col-md-6 mb-4"><div id="grafico7" style="height:300px;"></div></div>
+    <div class="col-md-6 mb-4"><div id="grafico8" style="height:300px;"></div></div>
+    <div class="col-md-6 mb-4"><div id="grafico9" style="height:300px;"></div></div>
+    <div class="col-md-6 mb-4"><div id="grafico10" style="height:300px;"></div></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+google.charts.load('current', {'packages':['corechart', 'bar', 'table', 'line']});
+google.charts.setOnLoadCallback(drawCharts);
+
+function drawCharts() {
+    // 1. Partidos por torneo
+    const data1 = google.visualization.arrayToDataTable([
+        ['Torneo', 'Partidos'],
+        {% for nombre, total in partidos_por_torneo %}
+            ['{{ nombre }}', {{ total }}],
+        {% endfor %}
+    ]);
+    new google.visualization.ColumnChart(document.getElementById('grafico1'))
+        .draw(data1, { title: 'Total de partidos por torneo' });
+
+    // 2. Equipos por descripción (Pastel)
+    const data2 = google.visualization.arrayToDataTable([
+        ['Descripción', 'Total'],
+        {% for descripcion, total in equipos_por_descripcion %}
+            ['{{ descripcion }}', {{ total }}],
+        {% endfor %}
+    ]);
+    new google.visualization.PieChart(document.getElementById('grafico2'))
+        .draw(data2, { title: 'Total de equipos por descripción', pieHole: 0.3 });
+
+    // 3. Partidos por estadio (barras horizontales)
+    const data3 = google.visualization.arrayToDataTable([
+        ['Estadio', 'Partidos'],
+        {% for estadio, total in partidos_por_estadio %}
+            ['{{ estadio }}', {{ total }}],
+        {% endfor %}
+    ]);
+    new google.visualization.BarChart(document.getElementById('grafico3'))
+        .draw(data3, { title: 'Cantidad de partidos por estadio' });
+
+    // 4. Promedio edad árbitros
+    document.getElementById('grafico4').innerHTML = `
+        <div class='text-center border rounded shadow p-4'>
+            <h4>Promedio de edad de los árbitros</h4>
+            <h1>{{ promedio_edad_arbitros }}</h1>
+        </div>`;
+
+    // 5. Top equipos por jugadores
+    const data5 = google.visualization.arrayToDataTable([
+        ['Equipo', 'Total jugadores'],
+        {% for nombre, total in top_equipos %}
+            ['{{ nombre }}', {{ total }}],
+        {% endfor %}
+    ]);
+    new google.visualization.ColumnChart(document.getElementById('grafico5'))
+        .draw(data5, { title: 'Top equipos con más jugadores' });
+
+    // 6. Partidos por árbitro
+    const data6 = google.visualization.arrayToDataTable([
+        ['Árbitro', 'Partidos dirigidos'],
+        {% for arbitro, total in partidos_por_arbitro %}
+            ['{{ arbitro }}', {{ total }}],
+        {% endfor %}
+    ]);
+    new google.visualization.BarChart(document.getElementById('grafico6'))
+        .draw(data6, { title: 'Distribución de partidos por árbitro' });
+
+    // 7. Distribución de partidos por fecha (formato porcentual horizontal)
+    const rawData7 = [
+        {% for fecha, total in partidos_por_fecha %}
+            ['{{ fecha }}', {{ total }}],
+        {% endfor %}
+    ];
+
+    let totalSum7 = 0;
+    rawData7.forEach(d => totalSum7 += d[1]);
+
+    const data7 = google.visualization.arrayToDataTable([
+        ['Fecha', 'Porcentaje'],
+        ...rawData7.map(([fecha, total]) => [fecha, total / totalSum7])
+    ]);
+
+    new google.visualization.BarChart(document.getElementById('grafico7'))
+        .draw(data7, {
+            title: 'Distribución de partidos por fecha',
+            hAxis: {
+                format: 'percent',
+                minValue: 0
+            },
+            chartArea: { width: '70%' },
+            legend: { position: 'none' },
+            colors: ['#007bff']
+        });
+
+    // 8. Duelos de equipos (tabla)
+    const data8 = google.visualization.arrayToDataTable([
+        ['Equipo local', 'Equipo visitante', 'Cantidad'],
+        {% for local, visitante, total in duelos_equipos %}
+            ['{{ local }}', '{{ visitante }}', {{ total }}],
+        {% endfor %}
+    ]);
+    new google.visualization.Table(document.getElementById('grafico8'))
+        .draw(data8, { width: '100%', height: '100%' });
+
+    // 9. Partidos por mes (línea)
+    const data9 = google.visualization.arrayToDataTable([
+        ['Mes', 'Cantidad'],
+        {% for mes, total in partidos_por_mes %}
+            ['{{ mes }}', {{ total }}],
+        {% endfor %}
+    ]);
+    new google.visualization.LineChart(document.getElementById('grafico9'))
+        .draw(data9, { title: 'Cantidad de partidos por mes' });
+
+    // 10. Estadios más usados
+    const data10 = google.visualization.arrayToDataTable([
+        ['Estadio', 'Cantidad'],
+        {% for estadio, cantidad in estadios_top %}
+            ['{{ estadio }}', {{ cantidad }}],
+        {% endfor %}
+    ]);
+    new google.visualization.ColumnChart(document.getElementById('grafico10'))
+        .draw(data10, { title: 'Estadios más usados' });
+}
+</script>
+{% endblock %}

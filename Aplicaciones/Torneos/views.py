@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from .models import Arbitro, Equipo, Estadio, Partido, Torneo
+from django.db import connection
 
 # VISTA PRINCIPAL
 def home(request):
@@ -220,3 +221,98 @@ def eliminar_partido(request, id):
     partido.delete()
     messages.success(request, 'Partido eliminado correctamente.')
     return redirect('listar_partidos')
+
+
+## DASHBOARDS ##
+
+def estadisticas_torneos(request):
+    datos = {}
+
+    with connection.cursor() as cursor:
+        # 1. Partidos por torneo
+        cursor.execute("""
+            SELECT t.nombre, COUNT(p.id)
+            FROM partido p
+            JOIN torneo t ON p.torneo_id = t.id
+            GROUP BY t.nombre;
+        """)
+        datos['partidos_por_torneo'] = cursor.fetchall()
+
+        # 2. Equipos por descripción
+        cursor.execute("""
+            SELECT descripcion, COUNT(*) FROM equipo GROUP BY descripcion;
+        """)
+        datos['equipos_por_descripcion'] = cursor.fetchall()
+
+        # 3. Partidos por estadio
+        cursor.execute("""
+            SELECT e.nombre, COUNT(p.id)
+            FROM partido p
+            JOIN estadio e ON p.estadio_id = e.id
+            GROUP BY e.nombre;
+        """)
+        datos['partidos_por_estadio'] = cursor.fetchall()
+
+        # 4. Promedio de edad de árbitros
+        cursor.execute("""
+            SELECT ROUND(AVG(edad)) FROM arbitro;
+        """)
+        datos['promedio_edad_arbitros'] = cursor.fetchone()[0]
+
+        # 5. Top 2 equipos por jugadores
+        cursor.execute("""
+            SELECT nombre, total_jugadores
+            FROM equipo
+            ORDER BY total_jugadores DESC
+            LIMIT 2;
+        """)
+        datos['top_equipos'] = cursor.fetchall()
+
+        # 6. Árbitros con más partidos dirigidos
+        cursor.execute("""
+            SELECT a.nombre || ' ' || a.apellido, COUNT(p.id)
+            FROM partido p
+            JOIN arbitro a ON p.arbitro_id = a.id
+            GROUP BY a.nombre, a.apellido
+            ORDER BY COUNT(p.id) DESC
+            LIMIT 5;
+        """)
+        datos['partidos_por_arbitro'] = cursor.fetchall()
+
+        # 7. Fechas con más partidos
+        cursor.execute("""
+            SELECT fecha, COUNT(*) FROM partido GROUP BY fecha ORDER BY COUNT(*) DESC LIMIT 5;
+        """)
+        datos['partidos_por_fecha'] = cursor.fetchall()
+
+        # 8. Equipos enfrentados
+        cursor.execute("""
+            SELECT el.nombre, ev.nombre, COUNT(p.id)
+            FROM partido p
+            JOIN equipo el ON p.equipo_local_id = el.id
+            JOIN equipo ev ON p.equipo_visitante_id = ev.id
+            GROUP BY el.nombre, ev.nombre;
+        """)
+        datos['duelos_equipos'] = cursor.fetchall()
+
+        # 9. Partidos por mes
+        cursor.execute("""
+            SELECT TO_CHAR(fecha, 'YYYY-MM'), COUNT(*)
+            FROM partido
+            GROUP BY TO_CHAR(fecha, 'YYYY-MM')
+            ORDER BY TO_CHAR(fecha, 'YYYY-MM');
+        """)
+        datos['partidos_por_mes'] = cursor.fetchall()
+
+        # 10. Estadios con más partidos
+        cursor.execute("""
+            SELECT e.nombre, COUNT(p.id)
+            FROM partido p
+            JOIN estadio e ON p.estadio_id = e.id
+            GROUP BY e.nombre
+            ORDER BY COUNT(p.id) DESC
+            LIMIT 5;
+        """)
+        datos['estadios_top'] = cursor.fetchall()
+
+    return render(request, 'dashboard/estadisticas.html', datos)

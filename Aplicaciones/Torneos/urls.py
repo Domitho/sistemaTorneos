@@ -46,4 +46,7 @@ urlpatterns = [
     path('partidos/actualizar/<int:id>/', views.actualizar_partido, name='actualizar_partido'),
     path('partidos/eliminar/<int:id>/', views.eliminar_partido, name='eliminar_partido'),
 
+    # DASHBOARD
+    path('estadisticas/', views.estadisticas_torneos, name='estadisticas_torneos'),
+
 ]
