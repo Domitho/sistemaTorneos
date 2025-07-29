@@ -1,0 +1,70 @@
+{% extends 'plantilla.html' %}
+{% block contenido %}
+
+<h3 class="text-center mb-4">Sistema de Torneos Intercolegiales</h3>
+
+<div class="row g-4">
+
+    <div class="col-md-4">
+        <div class="card text-bg-primary h-100 shadow text-center">
+            <div class="card-body">
+                <i class="fa-solid fa-people-group fa-3x mb-3"></i>
+                <h5 class="card-title">Árbitros</h5>
+                <a href="{% url 'listar_arbitros' %}" class="btn btn-light mt-3">Ver Árbitros</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-bg-success h-100 shadow text-center">
+            <div class="card-body">
+                <i class="fa-solid fa-futbol fa-3x mb-3"></i>
+                <h5 class="card-title">Equipos</h5>
+                <a href="{% url 'listar_equipos' %}" class="btn btn-light mt-3">Ver Equipos</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-bg-warning h-100 shadow text-center">
+            <div class="card-body">
+                <i class="fa-solid fa-trophy fa-3x mb-3"></i>
+                <h5 class="card-title">Torneos</h5>
+                <a href="{% url 'listar_torneos' %}" class="btn btn-light mt-3">Ver Torneos</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-bg-info h-100 shadow text-center">
+            <div class="card-body">
+                <i class="fa-solid fa-building fa-3x mb-3"></i>
+                <h5 class="card-title">Estadios</h5>
+                <a href="{% url 'listar_estadios' %}" class="btn btn-light mt-3">Ver Estadios</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-bg-danger h-100 shadow text-center">
+            <div class="card-body">
+                <i class="fa-solid fa-calendar-days fa-3x mb-3"></i>
+                <h5 class="card-title">Partidos</h5>
+                <a href="{% url 'listar_partidos' %}" class="btn btn-light mt-3">Ver Partidos</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-bg-dark h-100 shadow text-center">
+            <div class="card-body">
+                <i class="fa-solid fa-chart-column fa-3x mb-3"></i>
+                <h5 class="card-title">Estadísticas</h5>
+                <a href="{% url 'estadisticas_torneos' %}" class="btn btn-light mt-3">Ver Gráficos</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

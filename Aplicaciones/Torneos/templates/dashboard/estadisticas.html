@@ -22,11 +22,11 @@ google.charts.load('current', {'packages':['corechart', 'bar', 'table', 'gauge']
 google.charts.setOnLoadCallback(drawCharts);
 
 function drawCharts() {
-    // 1. ColumnChart - Total de partidos por torneo
+    // 1. ColumnChart - Partidos por torneo
     const data1 = google.visualization.arrayToDataTable([
-        ['Torneo', 'Partidos'],
+        ['Torneo', 'Partidos', { role: 'annotation' }],
         {% for nombre, total in partidos_por_torneo %}
-        ['{{ nombre }}', {{ total }}],
+        ['{{ nombre }}', {{ total }}, '{{ total }}'],
         {% endfor %}
     ]);
     new google.visualization.ColumnChart(document.getElementById('grafico1')).draw(data1, {
@@ -41,14 +41,15 @@ function drawCharts() {
         {% endfor %}
     ]);
     new google.visualization.PieChart(document.getElementById('grafico2')).draw(data2, {
-        title: 'Equipos por descripción'
+        title: 'Equipos por descripción',
+        pieSliceText: 'value'
     });
 
     // 3. BarChart - Partidos por estadio
     const data3 = google.visualization.arrayToDataTable([
-        ['Estadio', 'Partidos'],
+        ['Estadio', 'Partidos', { role: 'annotation' }],
         {% for estadio, total in partidos_por_estadio %}
-        ['{{ estadio }}', {{ total }}],
+        ['{{ estadio }}', {{ total }}, '{{ total }}'],
         {% endfor %}
     ]);
     new google.visualization.BarChart(document.getElementById('grafico3')).draw(data3, {
@@ -67,7 +68,7 @@ function drawCharts() {
         minorTicks: 5
     });
 
-    // 5. DonutChart - Top 2 equipos
+    // 5. DonutChart - Top equipos
     const data5 = google.visualization.arrayToDataTable([
         ['Equipo', 'Jugadores'],
         {% for nombre, total in top_equipos %}
@@ -76,14 +77,15 @@ function drawCharts() {
     ]);
     new google.visualization.PieChart(document.getElementById('grafico5')).draw(data5, {
         title: 'Top equipos por jugadores',
-        pieHole: 0.4
+        pieHole: 0.4,
+        pieSliceText: 'value'
     });
 
-    // 6. BarChart - Partidos por árbitro con color personalizado
+    // 6. BarChart - Partidos por árbitro
     const data6 = google.visualization.arrayToDataTable([
-        ['Árbitro', 'Partidos'],
+        ['Árbitro', 'Partidos', { role: 'annotation' }],
         {% for arbitro, total in partidos_por_arbitro %}
-        ['{{ arbitro }}', {{ total }}],
+        ['{{ arbitro }}', {{ total }}, '{{ total }}'],
         {% endfor %}
     ]);
     new google.visualization.BarChart(document.getElementById('grafico6')).draw(data6, {
@@ -93,9 +95,9 @@ function drawCharts() {
 
     // 7. AreaChart - Partidos por fecha
     const data7 = google.visualization.arrayToDataTable([
-        ['Fecha', 'Partidos'],
+        ['Fecha', 'Partidos', { role: 'annotation' }],
         {% for fecha, total in partidos_por_fecha %}
-        ['{{ fecha }}', {{ total }}],
+        ['{{ fecha }}', {{ total }}, '{{ total }}'],
         {% endfor %}
     ]);
     new google.visualization.AreaChart(document.getElementById('grafico7')).draw(data7, {
@@ -114,9 +116,9 @@ function drawCharts() {
 
     // 9. LineChart - Partidos por mes
     const data9 = google.visualization.arrayToDataTable([
-        ['Mes', 'Partidos'],
+        ['Mes', 'Partidos', { role: 'annotation' }],
         {% for mes, total in partidos_por_mes %}
-        ['{{ mes }}', {{ total }}],
+        ['{{ mes }}', {{ total }}, '{{ total }}'],
         {% endfor %}
     ]);
     new google.visualization.LineChart(document.getElementById('grafico9')).draw(data9, {
