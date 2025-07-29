@@ -7,7 +7,7 @@
     <a href="{% url 'form_nuevo_estadio' %}" class="btn btn-success">+ Nuevo Estadio</a>
 </div>
 
-<table class="table table-bordered table-striped">
+<table id="tabla" class="table table-bordered table-striped">
     <thead class="table-dark">
         <tr>
             <th>ID</th>
@@ -40,6 +40,14 @@
 
 {% block scripts %}
 <script>
+    $(document).ready(function () {
+        $('#tabla').DataTable({
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+            }
+        });
+    });
+
     function confirmarEliminacion(id) {
         Swal.fire({
             title: '¿Estás seguro?',

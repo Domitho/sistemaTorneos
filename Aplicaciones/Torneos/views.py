@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.shortcuts import redirect, render
-from .models import Arbitro, Equipo, Estadio
+from .models import Arbitro, Equipo, Estadio, Partido, Torneo
 
 # VISTA PRINCIPAL
 def home(request):
@@ -118,3 +118,105 @@ def eliminar_estadio(request, id):
     messages.success(request, 'Estadio eliminado correctamente.')
     return redirect('listar_estadios')
 
+
+## TORNEOS ##
+
+def listar_torneos(request):
+    torneos = Torneo.objects.all()
+    return render(request, 'torneo/listar_torneo.html', {'torneos': torneos})
+
+def form_nuevo_torneo(request):
+    return render(request, 'torneo/nuevo_torneo.html')
+
+def guardar_torneo(request):
+    Torneo.objects.create(
+        nombre=request.POST['nombre'],
+        fecha_inicio=request.POST['fecha_inicio'],
+        fecha_fin=request.POST['fecha_fin']
+    )
+    messages.success(request, 'Torneo registrado correctamente.')
+    return redirect('listar_torneos')
+
+def form_editar_torneo(request, id):
+    torneo = Torneo.objects.get(id=id)
+    return render(request, 'torneo/editar_torneo.html', {'torneo': torneo})
+
+def actualizar_torneo(request, id):
+    torneo = Torneo.objects.get(id=id)
+    torneo.nombre = request.POST['nombre']
+    torneo.fecha_inicio = request.POST['fecha_inicio']
+    torneo.fecha_fin = request.POST['fecha_fin']
+    torneo.save()
+    messages.success(request, 'Torneo actualizado correctamente.')
+    return redirect('listar_torneos')
+
+def eliminar_torneo(request, id):
+    torneo = Torneo.objects.get(id=id)
+    torneo.delete()
+    messages.success(request, 'Torneo eliminado correctamente.')
+    return redirect('listar_torneos')
+
+
+## PARTIDOS ##
+
+def listar_partidos(request):
+    partidos = Partido.objects.all()
+    return render(request, 'partido/listar_partido.html', {'partidos': partidos})
+
+def form_nuevo_partido(request):
+    torneos = Torneo.objects.all()
+    equipos = Equipo.objects.all()
+    estadios = Estadio.objects.all()
+    arbitros = Arbitro.objects.all()
+    return render(request, 'partido/nuevo_partido.html', {
+        'torneos': torneos,
+        'equipos': equipos,
+        'estadios': estadios,
+        'arbitros': arbitros
+    })
+
+def guardar_partido(request):
+    Partido.objects.create(
+        torneo_id=request.POST['torneo'],
+        equipo_local_id=request.POST['equipo_local'],
+        equipo_visitante_id=request.POST['equipo_visitante'],
+        estadio_id=request.POST['estadio'],
+        arbitro_id=request.POST['arbitro'],
+        fecha=request.POST['fecha'],
+        hora=request.POST['hora']
+    )
+    messages.success(request, 'Partido registrado correctamente.')
+    return redirect('listar_partidos')
+
+def form_editar_partido(request, id):
+    partido = Partido.objects.get(id=id)
+    torneos = Torneo.objects.all()
+    equipos = Equipo.objects.all()
+    estadios = Estadio.objects.all()
+    arbitros = Arbitro.objects.all()
+    return render(request, 'partido/editar_partido.html', {
+        'partido': partido,
+        'torneos': torneos,
+        'equipos': equipos,
+        'estadios': estadios,
+        'arbitros': arbitros
+    })
+
+def actualizar_partido(request, id):
+    partido = Partido.objects.get(id=id)
+    partido.torneo_id = request.POST['torneo']
+    partido.equipo_local_id = request.POST['equipo_local']
+    partido.equipo_visitante_id = request.POST['equipo_visitante']
+    partido.estadio_id = request.POST['estadio']
+    partido.arbitro_id = request.POST['arbitro']
+    partido.fecha = request.POST['fecha']
+    partido.hora = request.POST['hora']
+    partido.save()
+    messages.success(request, 'Partido actualizado correctamente.')
+    return redirect('listar_partidos')
+
+def eliminar_partido(request, id):
+    partido = Partido.objects.get(id=id)
+    partido.delete()
+    messages.success(request, 'Partido eliminado correctamente.')
+    return redirect('listar_partidos')

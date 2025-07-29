@@ -1,10 +1,10 @@
 {% extends 'plantilla.html' %}
 
 {% block contenido %}
-<h3 class="mb-4">Lista de Equipos</h3>
+<h3 class="mb-4">Lista de Torneos</h3>
 
 <div class="mb-3 text-end">
-    <a href="{% url 'form_nuevo_equipo' %}" class="btn btn-success">+ Nuevo Equipo</a>
+    <a href="{% url 'form_nuevo_torneo' %}" class="btn btn-success">+ Nuevo Torneo</a>
 </div>
 
 <table id="tabla" class="table table-bordered table-striped">
@@ -12,26 +12,26 @@
         <tr>
             <th>ID</th>
             <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Jugadores</th>
+            <th>Fecha Inicio</th>
+            <th>Fecha Fin</th>
             <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
-        {% for equipo in equipos %}
+        {% for torneo in torneos %}
         <tr>
-            <td>{{ equipo.id }}</td>
-            <td>{{ equipo.nombre }}</td>
-            <td>{{ equipo.descripcion }}</td>
-            <td>{{ equipo.total_jugadores }}</td>
+            <td>{{ torneo.id }}</td>
+            <td>{{ torneo.nombre }}</td>
+            <td>{{ torneo.fecha_inicio }}</td>
+            <td>{{ torneo.fecha_fin }}</td>
             <td>
-                <a href="{% url 'form_editar_equipo' equipo.id %}" class="btn btn-primary btn-sm">Editar</a>
-                <a href="#" onclick="confirmarEliminacion({{ equipo.id }})" class="btn btn-danger btn-sm">Eliminar</a>
+                <a href="{% url 'form_editar_torneo' torneo.id %}" class="btn btn-primary btn-sm">Editar</a>
+                <a href="#" onclick="confirmarEliminacion({{ torneo.id }})" class="btn btn-danger btn-sm">Eliminar</a>
             </td>
         </tr>
         {% empty %}
         <tr>
-            <td colspan="5" class="text-center">No hay equipos registrados.</td>
+            <td colspan="5" class="text-center">No hay torneos registrados.</td>
         </tr>
         {% endfor %}
     </tbody>
@@ -48,10 +48,11 @@
         });
     });
 
+    
     function confirmarEliminacion(id) {
         Swal.fire({
             title: '¿Estás seguro?',
-            text: "Esta acción eliminará el equipo",
+            text: "Esta acción eliminará el torneo",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
@@ -60,7 +61,7 @@
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = '/equipos/eliminar/' + id + '/';
+                window.location.href = '/torneos/eliminar/' + id + '/';
             }
         });
     }

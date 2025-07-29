@@ -29,4 +29,21 @@ urlpatterns = [
     path('estadios/actualizar/<int:id>/', views.actualizar_estadio, name='actualizar_estadio'),
     path('estadios/eliminar/<int:id>/', views.eliminar_estadio, name='eliminar_estadio'),
 
+    # TORNEOS
+    path('torneos/', views.listar_torneos, name='listar_torneos'),
+    path('torneos/nuevo/', views.form_nuevo_torneo, name='form_nuevo_torneo'),
+    path('torneos/guardar/', views.guardar_torneo, name='guardar_torneo'),
+    path('torneos/editar/<int:id>/', views.form_editar_torneo, name='form_editar_torneo'),
+    path('torneos/actualizar/<int:id>/', views.actualizar_torneo, name='actualizar_torneo'),
+    path('torneos/eliminar/<int:id>/', views.eliminar_torneo, name='eliminar_torneo'),
+
+
+    # PARTIDOS
+    path('partidos/', views.listar_partidos, name='listar_partidos'),
+    path('partidos/nuevo/', views.form_nuevo_partido, name='form_nuevo_partido'),
+    path('partidos/guardar/', views.guardar_partido, name='guardar_partido'),
+    path('partidos/editar/<int:id>/', views.form_editar_partido, name='form_editar_partido'),
+    path('partidos/actualizar/<int:id>/', views.actualizar_partido, name='actualizar_partido'),
+    path('partidos/eliminar/<int:id>/', views.eliminar_partido, name='eliminar_partido'),
+
 ]

@@ -1,0 +1,43 @@
+{% extends 'plantilla.html' %}
+
+{% block contenido %}
+<h3 class="mb-4">Editar Torneo</h3>
+
+<form id="form-torneo" method="post" action="{% url 'actualizar_torneo' torneo.id %}">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label>Nombre</label>
+        <input type="text" class="form-control" name="nombre" value="{{ torneo.nombre }}">
+    </div>
+    <div class="mb-3">
+        <label>Fecha de Inicio</label>
+        <input type="date" class="form-control" name="fecha_inicio" value="{{ torneo.fecha_inicio }}">
+    </div>
+    <div class="mb-3">
+        <label>Fecha de Fin</label>
+        <input type="date" class="form-control" name="fecha_fin" value="{{ torneo.fecha_fin }}">
+    </div>
+    <div class="text-end">
+        <button type="submit" class="btn btn-primary">Actualizar</button>
+        <a href="{% url 'listar_torneos' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $('#form-torneo').validate({
+        rules: {
+            nombre: { required: true },
+            fecha_inicio: { required: true },
+            fecha_fin: { required: true }
+        },
+        messages: {
+            nombre: "Ingrese el nombre del torneo.",
+            fecha_inicio: "Ingrese la fecha de inicio.",
+            fecha_fin: "Ingrese la fecha de fin."
+        },
+        errorClass: 'text-danger'
+    });
+</script>
+{% endblock %}

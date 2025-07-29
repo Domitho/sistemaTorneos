@@ -1,0 +1,95 @@
+{% extends 'plantilla.html' %}
+
+{% block contenido %}
+<h3 class="mb-4">Editar Partido</h3>
+
+<form id="form-partido" method="post" action="{% url 'actualizar_partido' partido.id %}">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label>Torneo</label>
+        <select name="torneo" class="form-select">
+            {% for t in torneos %}
+            <option value="{{ t.id }}" {% if t.id == partido.torneo.id %}selected{% endif %}>{{ t.nombre }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Equipo Local</label>
+        <select name="equipo_local" class="form-select">
+            {% for e in equipos %}
+            <option value="{{ e.id }}" {% if e.id == partido.equipo_local.id %}selected{% endif %}>{{ e.nombre }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Equipo Visitante</label>
+        <select name="equipo_visitante" class="form-select">
+            {% for e in equipos %}
+            <option value="{{ e.id }}" {% if e.id == partido.equipo_visitante.id %}selected{% endif %}>{{ e.nombre }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Estadio</label>
+        <select name="estadio" class="form-select">
+            {% for es in estadios %}
+            <option value="{{ es.id }}" {% if es.id == partido.estadio.id %}selected{% endif %}>{{ es.nombre }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Árbitro</label>
+        <select name="arbitro" class="form-select">
+            {% for a in arbitros %}
+            <option value="{{ a.id }}" {% if a.id == partido.arbitro.id %}selected{% endif %}>{{ a.nombre }} {{ a.apellido }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Fecha</label>
+        <input type="date" name="fecha" class="form-control" value="{{ partido.fecha }}">
+    </div>
+
+    <div class="mb-3">
+        <label>Hora</label>
+        <input type="time" name="hora" class="form-control" value="{{ partido.hora }}">
+    </div>
+
+    <div class="text-end">
+        <button type="submit" class="btn btn-primary">Actualizar</button>
+        <a href="{% url 'listar_partidos' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $('#form-partido').validate({
+        rules: {
+            torneo: { required: true },
+            equipo_local: { required: true },
+            equipo_visitante: { required: true },
+            estadio: { required: true },
+            arbitro: { required: true },
+            fecha: { required: true },
+            hora: { required: true }
+        },
+        messages: {
+            torneo: "Seleccione el torneo.",
+            equipo_local: "Seleccione equipo local.",
+            equipo_visitante: "Seleccione equipo visitante.",
+            estadio: "Seleccione estadio.",
+            arbitro: "Seleccione árbitro.",
+            fecha: "Ingrese la fecha.",
+            hora: "Ingrese la hora."
+        },
+        errorClass: 'text-danger'
+    });
+</script>
+{% endblock %}
