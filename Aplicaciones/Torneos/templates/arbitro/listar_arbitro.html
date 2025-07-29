@@ -1,0 +1,69 @@
+{% extends 'plantilla.html' %}
+{% block contenido %}
+
+<h2 class="text-center">Lista de Árbitros</h2>
+
+<div class="mb-3 text-end">
+    <a href="{% url 'nuevo_arbitro' %}" class="btn btn-success">+ Nuevo Árbitro</a>
+</div>
+
+<table id="tablaArbitros" class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Edad</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for arbitro in arbitros %}
+        <tr>
+            <td>{{ arbitro.id }}</td>
+            <td>{{ arbitro.nombre }}</td>
+            <td>{{ arbitro.apellido }}</td>
+            <td>{{ arbitro.edad }}</td>
+            <td>
+                <a href="{% url 'editar_arbitro' arbitro.id %}" class="btn btn-primary btn-sm">Editar</a>
+                <a href="#" class="btn btn-danger btn-sm" onclick="confirmarEliminacion({{ arbitro.id }})">Eliminar</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center">No hay árbitros registrados.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        $('#tablaArbitros').DataTable({
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+            }
+        });
+    });
+
+    function confirmarEliminacion(id) {
+        Swal.fire({
+            title: '¿Estas Seguro?',
+            text: 'Esta Accion no se puede deshacer',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Si, Eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/arbitros/eliminar/' + id + '/';
+            }
+        });
+    }
+
+</script>
+{% endblock %}

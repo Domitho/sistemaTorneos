@@ -1,0 +1,59 @@
+{% extends 'plantilla.html' %}
+
+{% block contenido %}
+<h3 class="mb-4">Editar Árbitro</h3>
+
+<form id="form-arbitro" method="post" action="{% url 'actualizar_arbitro' arbitro.id %}">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label for="nombre" class="form-label">Nombre</label>
+        <input type="text" class="form-control" name="nombre" id="nombre" value="{{ arbitro.nombre }}">
+    </div>
+
+    <div class="mb-3">
+        <label for="apellido" class="form-label">Apellido</label>
+        <input type="text" class="form-control" name="apellido" id="apellido" value="{{ arbitro.apellido }}">
+    </div>
+
+    <div class="mb-3">
+        <label for="edad" class="form-label">Edad</label>
+        <input type="number" class="form-control" name="edad" id="edad" value="{{ arbitro.edad }}">
+    </div>
+
+    <div class="text-end">
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        <a href="{% url 'listar_arbitros' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        $('#form-arbitro').validate({
+            rules: {
+                nombre: { required: true, minlength: 2 },
+                apellido: { required: true, minlength: 2 },
+                edad: { required: true, number: true, min: 18 }
+            },
+            messages: {
+                nombre: {
+                    required: "Ingresa el nombre.",
+                    minlength: "Mínimo 2 caracteres."
+                },
+                apellido: {
+                    required: "Ingresa el apellido.",
+                    minlength: "Mínimo 2 caracteres."
+                },
+                edad: {
+                    required: "Ingresa la edad.",
+                    number: "Solo números.",
+                    min: "Debe ser mayor de edad (18+)."
+                }
+            },
+            errorClass: 'text-danger'
+        });
+    });
+</script>
+{% endblock %}
