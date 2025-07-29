@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.shortcuts import redirect, render
-from .models import Arbitro, Equipo
+from .models import Arbitro, Equipo, Estadio
 
 # VISTA PRINCIPAL
 def home(request):
@@ -80,3 +80,41 @@ def eliminar_equipo(request, id):
     equipo.delete()
     messages.success(request, 'Equipo eliminado correctamente.')
     return redirect('listar_equipos')
+
+## ESTADIOS ##
+
+def listar_estadios(request):
+    estadios = Estadio.objects.all()
+    return render(request, 'estadio/listar_estadio.html', {'estadios': estadios})
+
+def form_nuevo_estadio(request):
+    return render(request, 'estadio/nuevo_estadio.html')
+
+def guardar_estadio(request):
+    Estadio.objects.create(
+        nombre=request.POST['nombre'],
+        ubicacion=request.POST['ubicacion'],
+        capacidad=request.POST['capacidad']
+    )
+    messages.success(request, 'Estadio registrado correctamente.')
+    return redirect('listar_estadios')
+
+def form_editar_estadio(request, id):
+    estadio = Estadio.objects.get(id=id)
+    return render(request, 'estadio/editar_estadio.html', {'estadio': estadio})
+
+def actualizar_estadio(request, id):
+    estadio = Estadio.objects.get(id=id)
+    estadio.nombre = request.POST['nombre']
+    estadio.ubicacion = request.POST['ubicacion']
+    estadio.capacidad = request.POST['capacidad']
+    estadio.save()
+    messages.success(request, 'Estadio actualizado correctamente.')
+    return redirect('listar_estadios')
+
+def eliminar_estadio(request, id):
+    estadio = Estadio.objects.get(id=id)
+    estadio.delete()
+    messages.success(request, 'Estadio eliminado correctamente.')
+    return redirect('listar_estadios')
+

@@ -1,0 +1,43 @@
+{% extends 'plantilla.html' %}
+
+{% block contenido %}
+<h3 class="mb-4">Editar Estadio</h3>
+
+<form id="form-estadio" method="post" action="{% url 'actualizar_estadio' estadio.id %}">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label>Nombre</label>
+        <input type="text" class="form-control" name="nombre" value="{{ estadio.nombre }}">
+    </div>
+    <div class="mb-3">
+        <label>Ubicación</label>
+        <input type="text" class="form-control" name="ubicacion" value="{{ estadio.ubicacion }}">
+    </div>
+    <div class="mb-3">
+        <label>Capacidad</label>
+        <input type="number" class="form-control" name="capacidad" value="{{ estadio.capacidad }}">
+    </div>
+    <div class="text-end">
+        <button type="submit" class="btn btn-primary">Actualizar</button>
+        <a href="{% url 'listar_estadios' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $('#form-estadio').validate({
+        rules: {
+            nombre: { required: true },
+            ubicacion: { required: true },
+            capacidad: { required: true, number: true, min: 1 }
+        },
+        messages: {
+            nombre: "Ingrese el nombre.",
+            ubicacion: "Ingrese la ubicación.",
+            capacidad: "Ingrese un número válido."
+        },
+        errorClass: 'text-danger'
+    });
+</script>
+{% endblock %}

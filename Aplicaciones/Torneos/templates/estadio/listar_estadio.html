@@ -1,0 +1,60 @@
+{% extends 'plantilla.html' %}
+
+{% block contenido %}
+<h3 class="mb-4">Lista de Estadios</h3>
+
+<div class="mb-3 text-end">
+    <a href="{% url 'form_nuevo_estadio' %}" class="btn btn-success">+ Nuevo Estadio</a>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Ubicación</th>
+            <th>Capacidad</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for estadio in estadios %}
+        <tr>
+            <td>{{ estadio.id }}</td>
+            <td>{{ estadio.nombre }}</td>
+            <td>{{ estadio.ubicacion }}</td>
+            <td>{{ estadio.capacidad }}</td>
+            <td>
+                <a href="{% url 'form_editar_estadio' estadio.id %}" class="btn btn-primary btn-sm">Editar</a>
+                <a href="#" onclick="confirmarEliminacion({{ estadio.id }})" class="btn btn-danger btn-sm">Eliminar</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center">No hay estadios registrados.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function confirmarEliminacion(id) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "Esta acción eliminará el estadio",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/estadios/eliminar/' + id + '/';
+            }
+        });
+    }
+</script>
+{% endblock %}
