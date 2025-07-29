@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.shortcuts import redirect, render
-from .models import Arbitro
+from .models import Arbitro, Equipo
 
 # VISTA PRINCIPAL
 def home(request):
@@ -43,3 +43,40 @@ def eliminar_arbitro(request, id):
     arbitro.delete()
     messages.success(request, 'Arbitro Eliminado Correctamente')
     return redirect('listar_arbitros')
+
+## EQUIPOS ##
+
+def listar_equipos(request):
+    equipos = Equipo.objects.all()
+    return render(request, 'equipo/listar_equipo.html', {'equipos': equipos})
+
+def form_nuevo_equipo(request):
+    return render(request, 'equipo/nuevo_equipo.html')
+
+def guardar_equipo(request):
+    Equipo.objects.create(
+        nombre=request.POST['nombre'],
+        descripcion=request.POST['descripcion'],
+        total_jugadores=request.POST['total_jugadores']
+    )
+    messages.success(request, 'Equipo registrado correctamente.')
+    return redirect('listar_equipos')
+
+def form_editar_equipo(request, id):
+    equipo = Equipo.objects.get(id=id)
+    return render(request, 'equipo/editar_equipo.html', {'equipo': equipo})
+
+def actualizar_equipo(request, id):
+    equipo = Equipo.objects.get(id=id)
+    equipo.nombre = request.POST['nombre']
+    equipo.descripcion = request.POST['descripcion']
+    equipo.total_jugadores = request.POST['total_jugadores']
+    equipo.save()
+    messages.success(request, 'Equipo actualizado correctamente.')
+    return redirect('listar_equipos')
+
+def eliminar_equipo(request, id):
+    equipo = Equipo.objects.get(id=id)
+    equipo.delete()
+    messages.success(request, 'Equipo eliminado correctamente.')
+    return redirect('listar_equipos')

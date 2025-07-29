@@ -1,0 +1,43 @@
+{% extends 'plantilla.html' %}
+
+{% block contenido %}
+<h3 class="mb-4">Registrar Equipo</h3>
+
+<form id="form-equipo" method="post" action="{% url 'guardar_equipo' %}">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label>Nombre</label>
+        <input type="text" class="form-control" name="nombre">
+    </div>
+    <div class="mb-3">
+        <label>Descripción</label>
+        <input type="text" class="form-control" name="descripcion">
+    </div>
+    <div class="mb-3">
+        <label>Total de Jugadores</label>
+        <input type="number" class="form-control" name="total_jugadores">
+    </div>
+    <div class="text-end">
+        <button type="submit" class="btn btn-success">Guardar</button>
+        <a href="{% url 'listar_equipos' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $('#form-equipo').validate({
+        rules: {
+            nombre: { required: true },
+            descripcion: { required: true },
+            total_jugadores: { required: true, number: true, min: 6 }
+        },
+        messages: {
+            nombre: "Ingrese el nombre.",
+            descripcion: "Ingrese la descripción.",
+            total_jugadores: "Ingrese un número válido."
+        },
+        errorClass: 'text-danger'
+    });
+</script>
+{% endblock %}

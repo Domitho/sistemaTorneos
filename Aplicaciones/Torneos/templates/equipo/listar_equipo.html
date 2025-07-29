@@ -1,0 +1,60 @@
+{% extends 'plantilla.html' %}
+
+{% block contenido %}
+<h3 class="mb-4">Lista de Equipos</h3>
+
+<div class="mb-3 text-end">
+    <a href="{% url 'form_nuevo_equipo' %}" class="btn btn-success">+ Nuevo Equipo</a>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Jugadores</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for equipo in equipos %}
+        <tr>
+            <td>{{ equipo.id }}</td>
+            <td>{{ equipo.nombre }}</td>
+            <td>{{ equipo.descripcion }}</td>
+            <td>{{ equipo.total_jugadores }}</td>
+            <td>
+                <a href="{% url 'form_editar_equipo' equipo.id %}" class="btn btn-primary btn-sm">Editar</a>
+                <a href="#" onclick="confirmarEliminacion({{ equipo.id }})" class="btn btn-danger btn-sm">Eliminar</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center">No hay equipos registrados.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function confirmarEliminacion(id) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "Esta acción eliminará el equipo",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/equipos/eliminar/' + id + '/';
+            }
+        });
+    }
+</script>
+{% endblock %}
