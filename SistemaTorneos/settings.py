@@ -76,9 +76,9 @@ WSGI_APPLICATION = 'SistemaTorneos.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'torneosdbb',
+        'NAME': 'FinalVideo',
         'USER': 'postgres',
-        'PASSWORD': 'root',
+        'PASSWORD': '12345',
         'HOST': 'localhost',
         'PORT': '5432',
     }
